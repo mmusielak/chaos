@@ -5,35 +5,44 @@ canvas.width = 360;
 canvas.height = 240;
 context.imageSmoothingEnabled = false;
 
-var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-
-var buf = new ArrayBuffer(imageData.data.length);
-var buf8 = new Uint8ClampedArray(buf);
-var pixels = new Uint32Array(buf);
-
-var anchors = [
-  {x: 180, y: 20}, 
-  {x: 20, y: 220}, 
-  {x: 340, y: 220}
-]
-
-var cursor = {x: 180, y: 20}
+var image = context.getImageData(0, 0, canvas.width, canvas.height);
+var buffer = new ArrayBuffer(image.data.length);
+var uint8 = new Uint8Array(buffer);
+var uint32 = new Uint32Array(buffer);
 
 function animationFrame() {
   requestAnimationFrame(animationFrame);
-
-  for (var i = 0; i < 1; i ++) {
-    var target = anchors [Math.random() * 3 | 0];
-    
-    cursor.x += (target.x - cursor.x) >> 1;
-    cursor.y += (target.y - cursor.y) >> 1;
-
-    pixels [cursor.x + cursor.y * canvas.width] = 0x77FFFFFF;
-  }
-  
-  imageData.data.set(buf8);
-
-  context.putImageData(imageData, 0, 0);
+  strategies[0].iterate(canvas, uint32, 100)
+  image.data.set(uint8);
+  context.putImageData(image, 0, 0);
 }
+
+var strategies = [
+  {
+    init: function (canvas) {
+      this.anchors = [
+        {x: canvas.width / 2, y: 20},
+        {x: 20, y: canvas.height - 20},
+        {x: canvas.width - 2, y: canvas.height - 20}
+      ]
+      this.cursor = {
+        x: canvas.width/2,
+        y: canvas.height/2
+      }
+    },
+    iterate: function (canvas, screen, iterations) {
+      for (var i = 0; i < iterations; i ++) {
+        var anchor = this.anchors [Math.random() * this.anchors.length | 0];
+
+        this.cursor.x += (anchor.x - this.cursor.x) >> 1;
+        this.cursor.y += (anchor.y - this.cursor.y) >> 1;
+    
+        screen [this.cursor.x + this.cursor.y * canvas.width] = 0x77FFFFFF;
+      }
+    }
+  }
+]
+
+strategies[0].init(canvas)
 
 animationFrame();
