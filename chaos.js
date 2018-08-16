@@ -77,7 +77,7 @@ var strategies = [{
         this.cursor.x = nx;
         this.cursor.y = ny;
 
-        var sx = canvas.width / 2 + nx * canvas.width / 10 | 0;
+        var sx = canvas.width / 2 + nx * canvas.width / 5 | 0;
         var sy = canvas.height - ny * canvas.height / 10 | 0;
 
         screen[sx + sy * canvas.width] = 0xCC66CC66;
