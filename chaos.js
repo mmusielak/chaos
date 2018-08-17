@@ -1,6 +1,6 @@
 var counter = 0;
 var limiter = 5000000;
-var iterations = 1000;
+var iterations = 10000;
 var resolution = 10;
 
 var canvas = document.querySelector('canvas');
@@ -15,7 +15,12 @@ var buffer = new ArrayBuffer(image.data.length);
 var uint8 = new Uint8Array(buffer);
 var uint32 = new Uint32Array(buffer);
 
-function animationFrame () {
+// paint it black (good for screenshots)
+for (var i = 0; i < uint32.length; i++) {
+  uint32[i] = 0xFF000000;
+}
+
+function animationFrame() {
   for (var i = 0; i < iterations; i++) {
     mode.iterate(canvas, uint32);
   }
@@ -25,6 +30,8 @@ function animationFrame () {
 
   if ((counter += iterations) < limiter) {
     requestAnimationFrame(animationFrame);
+  } else {
+    console.info(`${counter} pixels were drawn.`);
   }
 }
 
@@ -68,7 +75,7 @@ var ngon = {
     };
 
     var radius = Math.min(canvas.width, canvas.height) / 2 - 40;
-    var theta = - Math.PI / 2;
+    var theta = -Math.PI / 2;
 
     for (var i = 0; i <= sides; i++) {
       this.nodes[i] = {
@@ -81,11 +88,15 @@ var ngon = {
   iterate: function (canvas, screen) {
     do {
       var next = Math.random() * this.nodes.length | 0;
-      if (this.neighbours) break; // just skip it
-    } while ( (this.different && this.last == next)
-      || (next + 1 + this.nodes.length) % this.nodes.length == this.last
-      || (next - 1 + this.nodes.length) % this.nodes.length == this.last)
-    
+
+      if (!this.skip_neighbours) {
+        break; // this means we're done here
+      }
+    } while (
+      (this.must_be_different && this.last == next) ||
+      (next + 3 + this.nodes.length) % this.nodes.length == this.last ||
+      (next - 3 + this.nodes.length) % this.nodes.length == this.last)
+
     var node = this.nodes[this.last = next];
 
     this.cursor.x += (node.x - this.cursor.x) >> 1;
@@ -105,10 +116,10 @@ var fern = {
     this.internal = { x: 0, y: 0 };
 
     this.matrices = [
-      [ 0.0000,  0.0000,  0.0000,  0.1600,  0.0000,  0.0000,  1],
-      [ 0.8500,  0.0400, -0.0400,  0.8500,  0.0000,  1.6000, 85],
-      [ 0.2000, -0.2600,  0.2300,  0.2200,  0.0000,  1.6000,  7],
-      [-0.1500,  0.2800,  0.2600,  0.2400,  0.0000,  0.4400,  7]
+      [0.0000, 0.0000, 0.0000, 0.1600, 0.0000, 0.0000, 1],
+      [0.8500, 0.0400, -0.0400, 0.8500, 0.0000, 1.6000, 85],
+      [0.2000, -0.2600, 0.2300, 0.2200, 0.0000, 1.6000, 7],
+      [-0.1500, 0.2800, 0.2600, 0.2400, 0.0000, 0.4400, 7]
     ];
   },
 
@@ -116,13 +127,13 @@ var fern = {
     var random = Math.random() * 100 | 0;
 
     // select random transformation based on their probabilities
-    for (var total = 0, i = 0; i < this.matrices.length; i ++) {
+    for (var total = 0, i = 0; i < this.matrices.length; i++) {
       total += this.matrices[i][6];
       if (total >= random) {
         break;
       }
     }
-    
+
     // apply affine transformation
     this.internal = transform(this.internal, this.matrices[i]);
 
@@ -149,26 +160,26 @@ function transform(point, matrix) {
 // -- INIT --
 
 // choose one:
-var mode = fern;
+//var mode = tri;
 
 // or:
 //var mode = fern;
 
-/* or
+//* or
 var mode = ngon;
 // determines if next node can be a neighbour
-ngon.neighbours = false;
+ngon.skip_neighbours = true;
 // determines if same node can be chosen twice in a row
-ngon.different = true;
+ngon.must_be_different = false;
 //*/
 
 // launch
-mode.init(canvas, 5);
+mode.init(canvas, 9);
 animationFrame();
 
 // -- HELPERS --
 
-function HSVToRGB (h, s, v) {
+function HSVToRGB(h, s, v) {
   var i = h * 6 | 0;
   var f = h * 6 - i;
   var p = v * (1 - s);
