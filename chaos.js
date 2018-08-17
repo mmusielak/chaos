@@ -28,108 +28,142 @@ function animationFrame () {
   }
 }
 
-var strategies = [//
-  {
-    init: function (canvas) {
-      this.anchors = [
-        { x: canvas.width / 2, y: 20 },
-        { x: 20, y: canvas.height - 20 },
-        { x: canvas.width - 2, y: canvas.height - 20 }
-      ];
-      this.cursor = {
-        x: canvas.width / 2, y: canvas.height / 2
-      };
-    },
-    iterate: function (canvas, screen) {
-      var anchor = this.anchors[Math.random() * this.anchors.length | 0];
+// -- TRI --
 
-      this.cursor.x += (anchor.x - this.cursor.x) >> 1;
-      this.cursor.y += (anchor.y - this.cursor.y) >> 1;
+var tri = {
 
-      var color = HSVToRGB(this.cursor.x / canvas.width, this.cursor.y / canvas.height, 0.5);
-      screen[this.cursor.x + this.cursor.y * canvas.width] = color;
-    }
-
+  init: function (canvas) {
+    this.nodes = [
+      { x: canvas.width / 2, y: 20 },
+      { x: 20, y: canvas.height - 20 },
+      { x: canvas.width - 2, y: canvas.height - 20 }
+    ];
+    this.cursor = {
+      x: canvas.width / 2, y: canvas.height / 2
+    };
   },
-  //
-  {
-    init: function (canvas) {
-      this.cursor = { x: 0, y: 0 };
-    },
-    iterate: function (canvas, screen) {
-      var nx = 0;
-      var ny = 0;
-      var r = Math.random();
 
-      if (r <= 0.01) { // F1 (1%)
-        nx = 0.00;
-        ny = 0.16 * this.cursor.y;
-      } else if (r <= 0.86) { // F2 (85%)
-        nx = 0.85 * this.cursor.x + 0.04 * this.cursor.y + 0.00;
-        ny = -0.04 * this.cursor.x + 0.85 * this.cursor.y + 1.60;
-      } else if (r <= 0.94) { // F3 (7%)
-        nx = 0.20 * this.cursor.x - 0.26 * this.cursor.y + 0.00;
-        ny = 0.23 * this.cursor.x + 0.22 * this.cursor.y + 1.60;
-      } else { // F4 (7%)
-        nx = -0.15 * this.cursor.x + 0.28 * this.cursor.y + 0.00;
-        ny = 0.26 * this.cursor.x + 0.24 * this.cursor.y + 0.44;
-      }
+  iterate: function (canvas, screen) {
+    var node = this.nodes[Math.random() * this.nodes.length | 0];
 
-      this.cursor.x = nx;
-      this.cursor.y = ny;
+    this.cursor.x += (node.x - this.cursor.x) >> 1;
+    this.cursor.y += (node.y - this.cursor.y) >> 1;
 
-      var sx = canvas.width / 2 + nx * canvas.width / 5.5 | 0;
-      var sy = canvas.height - ny * canvas.height / 10 | 0;
-
-      screen[sx + sy * canvas.width] = 0xCC66CC66;
-    }
-  },
-  //
-  {
-    init: function (canvas, sides) {
-      this.anchors = [];
-
-      var center = { 
-        x: canvas.width / 2, y: canvas.height / 2 
-      };
-
-      var radius = Math.min(canvas.width, canvas.height) / 2 - 40;
-      var theta = - Math.PI / 2;
-
-      for (var i = 0; i <= sides; i++) {
-        this.anchors[i] = {
-          x: radius * Math.cos(2 * Math.PI * i / sides + theta) + center.x,
-          y: radius * Math.sin(2 * Math.PI * i / sides + theta) + center.y
-        };
-      }
-
-      this.cursor = {
-        x: canvas.width / 2, y: canvas.height / 2
-      };
-    },
-    iterate: function (canvas, screen) {
-      do {
-        var next = Math.random() * this.anchors.length | 0;
-      } while (
-        (next + 3 + this.anchors.length) % this.anchors.length == this.next ||
-        (next - 3 + this.anchors.length) % this.anchors.length == this.next || this.next == next)
-      
-      this.next = next;
-
-      var anchor = this.anchors[next];
-
-      this.cursor.x += (anchor.x - this.cursor.x) >> 1;
-      this.cursor.y += (anchor.y - this.cursor.y) >> 1;
-
-      var color = HSVToRGB(this.cursor.x / canvas.width, this.cursor.y / canvas.height, 0.95);
-      screen[this.cursor.x + this.cursor.y * canvas.width] = color;
-    }
+    var color = HSVToRGB(this.cursor.x / canvas.width, this.cursor.y / canvas.height, 0.75);
+    screen[this.cursor.x + this.cursor.y * canvas.width] = color;
   }
-]
+};
 
-var mode = strategies[1];
-mode.init(canvas, 9);
+// -- E O F --
 
+// -- NGON --
+
+var ngon = {
+
+  init: function (canvas, sides) {
+    this.nodes = [];
+
+    this.cursor = {
+      x: canvas.width / 2, y: canvas.height / 2
+    };
+
+    var radius = Math.min(canvas.width, canvas.height) / 2 - 40;
+    var theta = - Math.PI / 2;
+
+    for (var i = 0; i <= sides; i++) {
+      this.nodes[i] = {
+        x: radius * Math.cos(2 * Math.PI * i / sides + theta) + this.cursor.x,
+        y: radius * Math.sin(2 * Math.PI * i / sides + theta) + this.cursor.y
+      };
+    }
+  },
+
+  iterate: function (canvas, screen) {
+    do {
+      var next = Math.random() * this.nodes.length | 0;
+      if (this.neighbours) break; // just skip it
+    } while ( (this.different && this.last == next)
+      || (next + 1 + this.nodes.length) % this.nodes.length == this.last
+      || (next - 1 + this.nodes.length) % this.nodes.length == this.last)
+    
+    var node = this.nodes[this.last = next];
+
+    this.cursor.x += (node.x - this.cursor.x) >> 1;
+    this.cursor.y += (node.y - this.cursor.y) >> 1;
+
+    var color = HSVToRGB(this.cursor.x / canvas.width, this.cursor.y / canvas.height, 0.95);
+    screen[this.cursor.x + this.cursor.y * canvas.width] = color;
+  }
+};
+
+// -- FERN --
+
+var fern = {
+
+  init: function (canvas) {
+    this.cursor = { x: 0, y: 0 };
+    this.internal = { x: 0, y: 0 };
+
+    this.matrices = [
+      [ 0.0000,  0.0000,  0.0000,  0.1600,  0.0000,  0.0000,  1],
+      [ 0.8500,  0.0400, -0.0400,  0.8500,  0.0000,  1.6000, 85],
+      [ 0.2000, -0.2600,  0.2300,  0.2200,  0.0000,  1.6000,  7],
+      [-0.1500,  0.2800,  0.2600,  0.2400,  0.0000,  0.4400,  7]
+    ];
+  },
+
+  iterate: function (canvas, screen) {
+    var random = Math.random() * 100 | 0;
+
+    // select random transformation based on their probabilities
+    for (var total = 0, i = 0; i < this.matrices.length; i ++) {
+      total += this.matrices[i][6];
+      if (total >= random) {
+        break;
+      }
+    }
+    
+    // apply affine transformation
+    this.internal = transform(this.internal, this.matrices[i]);
+
+    // map internal point to the screen space
+    //  we know it's oscilating between 
+    //   (-2.1818, 2.6556) in x axis 
+    //   and (0, 9.958510) in y axis  
+    this.cursor.x = canvas.width / 2 + this.internal.x * canvas.width / 5.5 | 0;
+    this.cursor.y = canvas.height - this.internal.y * canvas.height / 10 | 0;
+
+    screen[this.cursor.x + this.cursor.y * canvas.width] = 0xCC66CC66;
+  }
+};
+
+function transform(point, matrix) {
+  return {
+    x: point.x * matrix[0] + point.y * matrix[1] + matrix[4],
+    y: point.x * matrix[2] + point.y * matrix[3] + matrix[5]
+  };
+}
+
+// -- E O F --
+
+// -- INIT --
+
+// choose one:
+var mode = fern;
+
+// or:
+//var mode = fern;
+
+/* or
+var mode = ngon;
+// determines if next node can be a neighbour
+ngon.neighbours = false;
+// determines if same node can be chosen twice in a row
+ngon.different = true;
+//*/
+
+// launch
+mode.init(canvas, 5);
 animationFrame();
 
 // -- HELPERS --
