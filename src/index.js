@@ -176,7 +176,7 @@ ngon.must_be_different = false;
 // launch
 mode.init(canvas, 9);
 animationFrame();
-
+ 
 // -- HELPERS --
 
 function HSVToRGB(h, s, v) {

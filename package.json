@@ -1,0 +1,33 @@
+{
+  "name": "chaos",
+  "version": "1.0.0",
+  "description": "Chaos game and other fractals",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "webpack-dev-server --open",
+    "build": "webpack",
+    "jest": "jest src",
+    "lint": "eslint src",
+    "lint:fix": "eslint --fix src",
+    "test": "npm run lint && npm run jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mmusielak/chaos.git"
+  },
+  "keywords": [],
+  "author": "Mikołaj Musielak",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mmusielak/chaos/issues"
+  },
+  "homepage": "https://github.com/mmusielak/chaos#readme",
+  "devDependencies": {
+    "eslint": "^5.4.0",
+    "eslint-plugin-compat": "^2.5.1",
+    "jest": "^23.5.0",
+    "webpack": "^4.17.0",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.5"
+  }
+}
