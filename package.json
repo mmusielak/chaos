@@ -4,7 +4,7 @@
   "description": "Chaos game and other fractals",
   "main": "src/index.js",
   "scripts": {
-    "start": "webpack-dev-server --open",
+    "start": "webpack-dev-server -o dist/index.js --color --open",
     "build": "webpack",
     "jest": "jest src",
     "lint": "eslint src",
