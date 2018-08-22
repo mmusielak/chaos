@@ -1,5 +1,3 @@
-// sierpiński triangle
-
 export default {
   init: function (canvas) {
     this.nodes = [

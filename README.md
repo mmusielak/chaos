@@ -1,6 +1,9 @@
 # Chaos and Fractals
 
-Let's say we have ...
+Let's say we have three vertices defining a triangle and a point in random location within that triangle. Now let's play a game: pick a random vertex and jump half way towards it. Draw a pixel. Repeat the process.
+
+Soon a pattern will start to emerge. 
+
 
 ## Running
 

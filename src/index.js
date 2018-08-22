@@ -1,9 +1,9 @@
 // -- CONFIGURATION --
 
 var counter = 0;
-var limiter = 5000000;
+var limiter = 500000;
 var iterations = 10000;
-var resolution = 10;
+var resolution = 5;
 
 // -- PIXEL BUFFER --
 
@@ -26,19 +26,32 @@ for (var i = 0; i < uint32.length; i++) {
 
 // -- MODES --
 
-import tri from './fractals/triangle';
-tri.init(canvas);
+import triangle from './fractals/triangle';
+triangle.init(canvas);
 import square from './fractals/square';
 square.init(canvas);
+import hexagon from './fractals/hexagon';
+hexagon.init(canvas);
+import square1 from './fractals/square-1';
+square1.init(canvas);
+import diff from './fractals/square-diff';
+diff.init(canvas);
+import even from './fractals/even-square';
+even.init(canvas);
+import pentagon_diff from './fractals/pentagon-diff';
+pentagon_diff.init(canvas);
 import fern from './fractals/fern';
 fern.init(canvas);
 import ngon from './fractals/ngon';
 ngon.sides = 7;
 ngon.init(canvas);
 
+import tri_ifs from './fractals/triangle-ifs';
+tri_ifs.init(canvas);
+
 var mode = 0;
-var fractal = tri;
-var fractals = [tri, square, fern, ngon];
+var fractal = tri_ifs;
+var fractals = [triangle, square, fern, ngon];
 
 window.addEventListener('keydown', (e) => {
   var delta = 0;

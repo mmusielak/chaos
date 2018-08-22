@@ -1,18 +1,21 @@
 export default {
   init: function (canvas) {
-    this.nodes = [
-      { x: 20, y: 20 },
-      { x: canvas.width / 2, y: 20 },
-      { x: canvas.width - 20, y: 20 },
-      { x: canvas.width - 20, y: canvas.height / 2 },
-      { x: canvas.width - 20, y: canvas.height - 20 },
-      { x: canvas.width / 2, y: canvas.height - 20 },
-      { x: 20, y: canvas.height - 20 },
-      { x: 20, y: canvas.height / 2 }
-    ];
+    var sides = 6;
+    this.nodes = [];
+
     this.cursor = {
       x: canvas.width / 2, y: canvas.height / 2
     };
+
+    var radius = Math.min(canvas.width, canvas.height) / 2 - 40;
+    var theta = -Math.PI / 2;
+
+    for (var i = 0; i <= sides; i++) {
+      this.nodes[i] = {
+        x: radius * Math.cos(2 * Math.PI * i / sides + theta) + this.cursor.x,
+        y: radius * Math.sin(2 * Math.PI * i / sides + theta) + this.cursor.y
+      };
+    }
   },
   iterate: function (canvas) {
     var node = this.nodes[Math.random() * this.nodes.length | 0];

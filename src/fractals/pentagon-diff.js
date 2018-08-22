@@ -1,3 +1,8 @@
+/**
+ *  as defined on wiki:
+ *   A point inside a square repeatedly jumps half of the distance towards a randomly chosen vertex, but the currently chosen vertex cannot be 2 places away from the previously chosen vertex. 
+ */
+
 export default {
   init: function (canvas) {
     this.sides = 5;
@@ -18,17 +23,10 @@ export default {
       };
     }
   },
-
   iterate: function (canvas) {
     do {
       var next = Math.random() * this.nodes.length | 0;
-    } while (
-      (next + 4 + this.nodes.length) % this.nodes.length == this.last ||
-      (next - 4 + this.nodes.length) % this.nodes.length == this.last ||
-      (next - 0 + this.nodes.length) % this.nodes.length == this.last ||
-      (next + 0 + this.nodes.length) % this.nodes.length == this.last ||
-      (next + 2 + this.nodes.length) % this.nodes.length == this.last ||
-      (next - 2 + this.nodes.length) % this.nodes.length == this.last)
+    } while (next == this.last)
 
     var node = this.nodes[this.last = next];
 
