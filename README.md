@@ -1,17 +1,11 @@
-# Chaos game
+# Chaos and Fractals
 
-https://en.wikipedia.org/wiki/Chaos_game
+Let's say we have ...
 
 ## Running
 
-Currently you have to go the the **init** section (somewhere around ine 150) and select one of the modes:
+If you want to make any changes you can run `npm install` and `npm start` will initiate a dev server with hot reload. Otherwise you can simply open `index.html` from `dist` folder and use arrow keys to switch between modes.
 
-- **tri**
-- **fern**
-- **ngon**
+---
 
-If you choose **ngon** you can make few adjustments: 
-*neighbours* if set to false skips neighbouring nodes resulting in some interesting patterns 
-*different* if set to true forces algo to pick different node than the last that was selected previously
-
-Just make your adjustments and refresh the page.
+[1] https://en.wikipedia.org/wiki/Chaos_game

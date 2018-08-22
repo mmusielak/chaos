@@ -1,7 +1,11 @@
+// -- CONFIGURATION --
+
 var counter = 0;
 var limiter = 5000000;
 var iterations = 10000;
-var resolution = 2;
+var resolution = 10;
+
+// -- PIXEL BUFFER --
 
 var canvas = document.querySelector('canvas');
 var context = canvas.getContext('2d');
@@ -20,16 +24,42 @@ for (var i = 0; i < uint32.length; i++) {
   uint32[i] = 0xFF000000;
 }
 
+// -- MODES --
+
 import tri from './fractals/triangle';
 tri.init(canvas);
-import sq from './fractals/square';
-sq.init(canvas);
+import square from './fractals/square';
+square.init(canvas);
 import fern from './fractals/fern';
 fern.init(canvas);
 import ngon from './fractals/ngon';
-ngon.init(canvas, 5);
+ngon.sides = 7;
+ngon.init(canvas);
 
-var fractal = sq;
+var mode = 0;
+var fractal = tri;
+var fractals = [tri, square, fern, ngon];
+
+window.addEventListener('keydown', (e) => {
+  var delta = 0;
+  if (event.keyCode == 37) {
+    delta = -1;
+  }
+  if (event.keyCode == 39) {
+    delta = 1;
+  }
+  if (delta) {
+    mode = (fractals.length + mode + delta) % fractals.length;
+    fractal = fractals[mode];
+    fractal.init(canvas);
+    counter = 0;
+    for (var i = 0; i < uint32.length; i++) {
+      uint32[i] = 0xFF000000;
+    }
+  }
+});
+
+// -- LOOP --
 
 function animationFrame() {
   for (var i = 0; i < iterations; i++) {
