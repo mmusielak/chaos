@@ -3,6 +3,8 @@
  *   current vertex cannot be one place away (anti-clockwise) from the previously chosen vertex.
  */
 
+import Polygon from 'math/polygon';
+
 export default {
   init: function (canvas) {
     this.nodes = [
@@ -14,6 +16,8 @@ export default {
     this.cursor = {
       x: canvas.width / 2, y: canvas.height / 2
     };
+    // TODO why it's not working?
+    //this.nodes = Polygon.construct(canvas.width, canvas.height, 4, -Math.PI / 2);
   },
   iterate: function (canvas) {
     do {

@@ -3,6 +3,8 @@
  *   A point inside a square repeatedly jumps half of the distance towards a randomly chosen vertex, but the currently chosen vertex cannot be 2 places away from the previously chosen vertex. 
  */
 
+import Polygon from 'math/polygon';
+
 export default {
   init: function (canvas) {
     this.nodes = [
@@ -14,12 +16,14 @@ export default {
     this.cursor = {
       x: canvas.width / 2, y: canvas.height / 2
     };
+    // TODO why it's not working?
+    //this.nodes = Polygon.construct(canvas.width, canvas.height, 5);
   },
   iterate: function (canvas) {
     do {
       var next = Math.random() * this.nodes.length | 0;
     } while (
-      (next - 2 + this.nodes.length) % this.nodes.length == this.last||
+      (next - 2 + this.nodes.length) % this.nodes.length == this.last ||
       (next + 2 + this.nodes.length) % this.nodes.length == this.last)
 
     var node = this.nodes[this.last = next];

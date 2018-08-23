@@ -1,3 +1,5 @@
+var path = require('path');
+
 module.exports = {
   mode: 'development',
   devServer: {
@@ -7,5 +9,8 @@ module.exports = {
   },
   output: {
     filename: 'index.js'
+  },
+  resolve: {
+    modules: [path.resolve(__dirname, 'src'), 'node_modules']
   }
-}
+};

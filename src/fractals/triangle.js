@@ -1,13 +1,11 @@
+import Polygon from 'math/polygon';
+
 export default {
   init: function (canvas) {
-    this.nodes = [
-      { x: canvas.width / 2, y: 20 },
-      { x: 20, y: canvas.height - 20 },
-      { x: canvas.width - 20, y: canvas.height - 20 }
-    ];
     this.cursor = {
       x: canvas.width / 2, y: canvas.height / 2
     };
+    this.nodes = Polygon.construct(canvas.width, canvas.height, 3, -Math.PI / 2);
   },
   iterate: function (canvas) {
     var node = this.nodes[Math.random() * this.nodes.length | 0];
