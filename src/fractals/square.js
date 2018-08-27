@@ -17,7 +17,8 @@ export default {
     ];
   },
   iterate: function (canvas) {
-    var node = this.nodes[Math.random() * this.nodes.length | 0];
+    var random = Math.random() * this.nodes.length | 0;
+    var node = this.nodes[random];
 
     if (window) { // I like it better but it seems to produce artifacts
       this.cursor.x += (node.x - this.cursor.x) * .66 | 0;
@@ -27,6 +28,8 @@ export default {
       this.cursor.y = (2 * node.y + this.cursor.y) / 3 | 0;
     }
 
-    return this.cursor;
+    return {
+      ...this.cursor
+    };
   }
 };

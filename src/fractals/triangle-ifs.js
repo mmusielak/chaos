@@ -3,24 +3,28 @@ import Matrix from 'math/matrix';
 export default {
   init: function (canvas) {
     this.cursor = { x: 0, y: 0 };
-    this.internal = { x: 0, y: 0 };
 
     this.matrices = [
+      /*
       new Matrix(0.5, 0, 0, 0.5, 0, 0),
       new Matrix(0.5, 0, 0, 0.5, 1, 0),
-      new Matrix(0.5, 0, 0, 0.5, 0, 1)
+      new Matrix(0.5, 0, 0, 0.5, 0, 1)*/
+      new Matrix(0.5, 0, 0, 0.5, 0, 0),
+      new Matrix(0.5, 0, 0, 0.5, 0.5, 0),
+      new Matrix(0.5, 0, 0, 0.5, 0.25, Math.sqrt(3) / 4)
     ];
   },
 
   iterate: function (canvas) {
+    // choose random matrix
     var random = Math.random() * this.matrices.length | 0;
-
+    var matrix = this.matrices[random];
     // apply affine transformation
-    this.internal = this.matrices[random].apply(this.internal);
+    this.cursor = matrix.apply(this.cursor);
     // map internal point to the screen space
-    this.cursor.x = this.internal.x * (canvas.width) | 0;
-    this.cursor.y = this.internal.y * (canvas.height) | 0;
-
-    return this.cursor;
+    return {
+      x: this.cursor.x * canvas.width | 0,
+      y: this.cursor.y * canvas.height | 0
+    };
   }
 }

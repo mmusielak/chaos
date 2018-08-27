@@ -24,6 +24,8 @@ export default {
     this.cursor.x += (node.x - this.cursor.x) >> 1;
     this.cursor.y += (node.y - this.cursor.y) >> 1;
 
-    return this.cursor;
+    return {
+      ...this.cursor
+    };
   }
 };

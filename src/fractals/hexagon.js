@@ -8,11 +8,14 @@ export default {
     this.nodes = Polygon.construct(canvas.width, canvas.height, 6, -Math.PI / 2);
   },
   iterate: function (canvas) {
-    var node = this.nodes[Math.random() * this.nodes.length | 0];
+    var random = Math.random() * this.nodes.length | 0;
+    var node = this.nodes[random];
 
     this.cursor.x += (node.x - this.cursor.x) * .66 | 0;
     this.cursor.y += (node.y - this.cursor.y) * .66 | 0;
 
-    return this.cursor;
+    return {
+      ...this.cursor
+    };
   }
 };
