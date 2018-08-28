@@ -1,5 +1,3 @@
-export default Matrix;
-
 /**
  *  A traditional transformation matrix is represented as:
  *   [ a c e ]
@@ -11,7 +9,7 @@ export default Matrix;
  *  Additionally e and f components are often referred as tx and ty
  *   as their main purpose in two dimensional tranformations is translation.
  */
-function Matrix (a, b, c, d, e, f) {
+export default function Matrix(a, b, c, d, e, f) {
   this.a = a;
   this.b = b;
   this.c = c;

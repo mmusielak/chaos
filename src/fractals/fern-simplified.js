@@ -1,13 +1,15 @@
 import Matrix from 'math/matrix';
 
 export default {
-  init: function (canvas) {
+  id: 'fern (simplified)',
+
+  init: function (width, height) {
     this.cursor = { x: 0, y: 0 };
   },
 
-  iterate: function (canvas) {
+  iterate: function (width, height) {
     var random = Math.random();
-    
+
     var nx, ny;
 
     if (random <= 0.01) { // F1 (1%)
@@ -32,8 +34,8 @@ export default {
     //   (-2.1818, 2.6556) in x axis 
     //   and (0, 9.958510) in y axis  
     return {
-      x: canvas.width / 2 + this.cursor.x * canvas.width / 5.5 | 0,
-      y: canvas.height - this.cursor.y * canvas.height / 10 | 0
+      x: width / 2 + this.cursor.x * width / 5.5 | 0,
+      y: height - this.cursor.y * height / 10 | 0
     };
   }
-}
+};

@@ -7,9 +7,8 @@ export default {
     };
 
     var radius = Math.min(width, height) / 2;
-    //var theta = -Math.PI / 2;
 
-    for (var i = 0; i <= sides; i++) {
+    for (var i = 0; i < sides; i++) {
       nodes[i] = {
         x: radius * Math.cos(2 * Math.PI * i / sides + theta) + center.x,
         y: radius * Math.sin(2 * Math.PI * i / sides + theta) + center.y

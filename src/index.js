@@ -2,8 +2,10 @@
 
 var counter = 0;
 var limiter = 500000;
-var iterations = 10000;
-var resolution = 5;
+var iterations = 5000;
+var resolution = 8;
+
+var label = document.querySelector('footer');
 
 // -- PIXEL BUFFER --
 
@@ -27,38 +29,30 @@ for (var i = 0; i < uint32.length; i++) {
 // -- MODES --
 
 import fern from 'fractals/fern';
-fern.init(canvas);
 import fern_simplified from 'fractals/fern-simplified';
-fern_simplified.init(canvas);
 import square from 'fractals/square';
-square.init(canvas);
 import hexagon from 'fractals/hexagon';
-hexagon.init(canvas);
 import square1 from 'fractals/square-1';
-square1.init(canvas);
 import diff from 'fractals/square-diff';
-diff.init(canvas);
 import even from 'fractals/even-square';
-even.init(canvas);
 import pentagon_diff from 'fractals/pentagon-diff';
-pentagon_diff.init(canvas);
+import nonagon from 'fractals/nonagon';
 import ngon from 'fractals/ngon';
-ngon.init(canvas);
 import triangle from 'fractals/triangle';
-triangle.init(canvas);
 import triangle_ifs from 'fractals/triangle-ifs';
-triangle_ifs.init(canvas);
 
 var mode = 0;
 var fractal = fern;
 var fractals = [
   fern, fern_simplified,
   hexagon,
-  ngon,
+  nonagon, ngon,
   pentagon_diff,
   square, square1, diff, even,
   triangle, triangle_ifs
 ];
+
+fractals.forEach(f => f.init(canvas.width, canvas.height));
 
 window.addEventListener('keydown', (e) => {
   var delta = 0;
@@ -70,9 +64,14 @@ window.addEventListener('keydown', (e) => {
   }
   if (delta) {
     mode = (fractals.length + mode + delta) % fractals.length;
+
     fractal = fractals[mode];
-    fractal.init(canvas);
+    fractal.init(canvas.width, canvas.height);
+
     counter = 0;
+
+    label.innerHTML = fractal.id.toString();
+
     for (var i = 0; i < uint32.length; i++) {
       uint32[i] = 0xFF000000;
     }
@@ -84,7 +83,7 @@ window.addEventListener('keydown', (e) => {
 
 function animationFrame() {
   for (var i = 0; i < iterations; i++) {
-    var cursor = fractal.iterate(canvas);
+    var cursor = fractal.iterate(canvas.width, canvas.height);
     var color = HSVtoRGB(cursor.x / canvas.width, cursor.y / canvas.height, 1);
 
     uint32[cursor.x + cursor.y * canvas.width] = color;

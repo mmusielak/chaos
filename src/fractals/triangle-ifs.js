@@ -1,7 +1,9 @@
 import Matrix from 'math/matrix';
 
 export default {
-  init: function (canvas) {
+  id: 'triangle (ifs)',
+
+  init: function (width, height) {
     this.cursor = { x: 0, y: 0 };
 
     this.matrices = [
@@ -15,7 +17,7 @@ export default {
     ];
   },
 
-  iterate: function (canvas) {
+  iterate: function (width, height) {
     // choose random matrix
     var random = Math.random() * this.matrices.length | 0;
     var matrix = this.matrices[random];
@@ -23,8 +25,8 @@ export default {
     this.cursor = matrix.apply(this.cursor);
     // map internal point to the screen space
     return {
-      x: this.cursor.x * canvas.width | 0,
-      y: this.cursor.y * canvas.height | 0
+      x: this.cursor.x * width | 0,
+      y: this.cursor.y * height | 0
     };
   }
-}
+};

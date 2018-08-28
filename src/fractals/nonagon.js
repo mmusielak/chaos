@@ -1,11 +1,11 @@
 import Polygon from 'math/polygon';
 
 export default {
-  id: 'hexagon',
+  id: 'nonagon',
 
   init: function (width, height) {
     this.cursor = { x: 0, y: 0 };
-    this.nodes = Polygon.construct(width, height, 6, -Math.PI / 2);
+    this.nodes = Polygon.construct(width, height, 9, -Math.PI / 2);
   },
 
   iterate: function (width, height) {
