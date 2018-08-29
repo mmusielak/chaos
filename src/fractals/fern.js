@@ -5,7 +5,6 @@ export default {
 
   init: function (width, height) {
     this.cursor = { x: 0, y: 0 };
-
     this.chances = [1, 85, 7, 7];
     this.total = this.chances.reduce((acc, curr) => acc + curr);
     this.matrices = [

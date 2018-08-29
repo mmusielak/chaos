@@ -1,30 +1,14 @@
 // -- CONFIGURATION --
 
 var counter = 0;
-var limiter = 500000;
-var iterations = 5000;
-var resolution = 8;
+var limiter = 1000000;
+var iterations = 50000;
+var resolution = 2;
 
-var label = document.querySelector('footer');
-
-// -- PIXEL BUFFER --
+// -- DOM ELEMENTS --
 
 var canvas = document.querySelector('canvas');
-var context = canvas.getContext('2d');
-
-canvas.width = 360 * resolution;
-canvas.height = 240 * resolution;
-context.imageSmoothingEnabled = true;
-
-var image = context.getImageData(0, 0, canvas.width, canvas.height);
-var buffer = new ArrayBuffer(image.data.length);
-var uint8 = new Uint8Array(buffer);
-var uint32 = new Uint32Array(buffer);
-
-// paint it black (good for screenshots)
-for (var i = 0; i < uint32.length; i++) {
-  uint32[i] = 0xFF000000;
-}
+var label = document.querySelector('footer');
 
 // -- MODES --
 
@@ -41,8 +25,7 @@ import ngon from 'fractals/ngon';
 import triangle from 'fractals/triangle';
 import triangle_ifs from 'fractals/triangle-ifs';
 
-var mode = 0;
-var fractal = fern;
+var index = 0;
 var fractals = [
   fern, fern_simplified,
   hexagon,
@@ -54,34 +37,61 @@ var fractals = [
 
 fractals.forEach(f => f.init(canvas.width, canvas.height));
 
+function init(idx) {
+  index = idx;
+  var fractal = fractals[index];
+  fractal.init(canvas.width, canvas.height);
+  label.innerHTML = fractal.id.toString();
+
+  // reset
+  counter = 0;
+
+  // paint it black (good for screenshots)
+  for (var i = 0; i < uint32.length; i++) {
+    uint32[i] = 0xFF000000;
+  }
+
+  /*
+  var vertices = fractal.nodes;
+  if (vertices) {
+    for (var i = 1; i < vertices.length; i++) {
+      line(vertices[i - 1].x, vertices[i - 1].y, vertices[i].x, vertices[i].y);
+    }
+  }
+  */
+
+  requestAnimationFrame(animationFrame);
+}
+
+// -- PIXEL BUFFER --
+
+var context = canvas.getContext('2d');
+
+canvas.width = 360 * resolution;
+canvas.height = 240 * resolution;
+context.imageSmoothingEnabled = true;
+
+var image = context.getImageData(0, 0, canvas.width, canvas.height);
+var buffer = new ArrayBuffer(image.data.length);
+var uint8 = new Uint8Array(buffer);
+var uint32 = new Uint32Array(buffer);
+
+// -- MODES CYCLE --
+
 window.addEventListener('keydown', (e) => {
-  var delta = 0;
   if (event.keyCode == 37) {
-    delta = -1;
+    init((index - 1 + fractals.length) % fractals.length);
   }
   if (event.keyCode == 39) {
-    delta = 1;
-  }
-  if (delta) {
-    mode = (fractals.length + mode + delta) % fractals.length;
-
-    fractal = fractals[mode];
-    fractal.init(canvas.width, canvas.height);
-
-    counter = 0;
-
-    label.innerHTML = fractal.id.toString();
-
-    for (var i = 0; i < uint32.length; i++) {
-      uint32[i] = 0xFF000000;
-    }
-    requestAnimationFrame(animationFrame);
+    init((index + 1 + fractals.length) % fractals.length);
   }
 });
 
 // -- LOOP --
 
 function animationFrame() {
+  var fractal = fractals[index];
+
   for (var i = 0; i < iterations; i++) {
     var cursor = fractal.iterate(canvas.width, canvas.height);
     var color = HSVtoRGB(cursor.x / canvas.width, cursor.y / canvas.height, 1);
@@ -97,11 +107,12 @@ function animationFrame() {
   if ((counter += iterations) < limiter) {
     requestAnimationFrame(animationFrame);
   } else {
+    //    alert(1)
     console.info(`${counter} pixels were drawn.`);
   }
 }
 
-animationFrame();
+init(0);
 
 // -- HELPERS --
 
@@ -112,11 +123,11 @@ function HSVtoRGB(h, s, v) {
   var q = v * (1 - f * s);
   var t = v * (1 - (1 - f) * s);
   switch (i % 6) {
-    case 0: return 0xFF << 24 | v * 0xFF << 16 | t * 0xFF << 8 | p * 0xFF;
-    case 1: return 0xFF << 24 | q * 0xFF << 16 | v * 0xFF << 8 | p * 0xFF;
-    case 2: return 0xFF << 24 | p * 0xFF << 16 | v * 0xFF << 8 | t * 0xFF;
-    case 3: return 0xFF << 24 | p * 0xFF << 16 | q * 0xFF << 8 | v * 0xFF;
-    case 4: return 0xFF << 24 | t * 0xFF << 16 | p * 0xFF << 8 | v * 0xFF;
-    case 5: return 0xFF << 24 | v * 0xFF << 16 | p * 0xFF << 8 | q * 0xFF;
+  case 0: return 0xFF << 24 | v * 0xFF << 16 | t * 0xFF << 8 | p * 0xFF;
+  case 1: return 0xFF << 24 | q * 0xFF << 16 | v * 0xFF << 8 | p * 0xFF;
+  case 2: return 0xFF << 24 | p * 0xFF << 16 | v * 0xFF << 8 | t * 0xFF;
+  case 3: return 0xFF << 24 | p * 0xFF << 16 | q * 0xFF << 8 | v * 0xFF;
+  case 4: return 0xFF << 24 | t * 0xFF << 16 | p * 0xFF << 8 | v * 0xFF;
+  case 5: return 0xFF << 24 | v * 0xFF << 16 | p * 0xFF << 8 | q * 0xFF;
   }
 }

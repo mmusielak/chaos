@@ -5,7 +5,6 @@ export default {
 
   init: function (width, height) {
     this.cursor = { x: 0, y: 0 };
-
     this.matrices = [
       /*
       new Matrix(0.5, 0, 0, 0.5, 0, 0),

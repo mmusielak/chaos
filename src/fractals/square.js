@@ -5,7 +5,7 @@ export default {
 
   init: function (width, height) {
     this.cursor = { x: 0, y: 0 };
-    this.nodes = [
+    this.vertices = [
       { x: 20, y: 20 },
       { x: width / 2, y: 20 },
       { x: width - 20, y: 20 },
@@ -18,11 +18,11 @@ export default {
   },
 
   iterate: function (width, height) {
-    var random = Math.random() * this.nodes.length | 0;
-    var node = this.nodes[random];
+    var random = Math.random() * this.vertices.length | 0;
+    var vertex = this.vertices[random];
 
-    this.cursor.x += (node.x - this.cursor.x) * .6666666;
-    this.cursor.y += (node.y - this.cursor.y) * .6666666;
+    this.cursor.x += (vertex.x - this.cursor.x) * .6666666;
+    this.cursor.y += (vertex.y - this.cursor.y) * .6666666;
 
     return {
       x: this.cursor.x | 0,
