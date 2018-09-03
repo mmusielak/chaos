@@ -3,7 +3,7 @@
 var counter = 0;
 var limiter = 1000000;
 var iterations = 50000;
-var resolution = 2;
+var resolution = 10;
 
 // -- DOM ELEMENTS --
 
@@ -25,14 +25,20 @@ import ngon from 'fractals/ngon';
 import triangle from 'fractals/triangle';
 import triangle_ifs from 'fractals/triangle-ifs';
 
+import lorenz from 'attractors/lorenz';
+import roessler from 'attractors/roessler';
+import thomas from 'attractors/thomas';
+
 var index = 0;
 var fractals = [
+
   fern, fern_simplified,
   hexagon,
   nonagon, ngon,
   pentagon_diff,
   square, square1, diff, even,
-  triangle, triangle_ifs
+  triangle, triangle_ifs,
+  lorenz, roessler, thomas
 ];
 
 fractals.forEach(f => f.init(canvas.width, canvas.height));
