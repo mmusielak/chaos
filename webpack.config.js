@@ -1,7 +1,7 @@
 var path = require('path');
 
 module.exports = {
-  mode: 'development',
+  mode: 'production',
   devServer: {
     contentBase: 'dist',
     compress: true,
