@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Strange Attractors</title>
+  <meta charset="utf-8">
+  <meta content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" name="viewport">
+  <link href="visu.css" media="screen" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Lato:100,700|Playfair+Display:700" rel="stylesheet">
+</head>
+
+<body>
+  <div id="container">
+    <canvas></canvas>
+  </div>
+  <div id="info">
+    <h1>Strange attractors</h1>
+    <p>Rendering <a href="https://en.wikipedia.org/wiki/Attractor#Strange_attractor">strange attractors</a>.</p>
+    <p>Pick one type of attractor, or <span class="action" id="randomize">randomize the selected one</span></p>
+
+    <p></p>
+
+    <ul id="attractors">
+      <li class="action" data-attractor="lorenz">Lorenz</li>
+      <li class="action" data-attractor="rössler">Rössler</li>
+      <li class="action" data-attractor="rabinovich-fabrikant">Rabinovich-Fabrikant</li>
+      <li class="action" data-attractor="thomas">Thomas</li>
+      <li class="action" data-attractor="lorenz-84">Lorenz-84</li>
+    </ul>
+
+    <p></p>
+
+    <p>If you find a nice one, you can share the URL<br> Some solutions might not be very interesting</p>
+    <p id="moreDetails"><b>More details...</b></p>
+
+    <div class="hidden" id="details">
+      <p>Several points are created evaluating a strange attractor equation.</p>
+      <p>From those points, a line geometry is created, a MeshLine geometry is created, and particles (billboarded
+        triangles)
+        are spawned along the path. MeshLine width and particles sizes and spread is based on distance along the path.</p>
+      <p>Finally everything is rendered to a framebuffer (3 draw calls, one for each geometry), then some
+        post-processing
+        is applied. First, a slight RGB shift. Then, a tilt shift shader performing a directional blur pass on the
+        vertical
+        axis, based on vertical distance to the center. Finally, a final pass performs FXAA, add vignette, noise and
+        performs
+        gamma correction.</p>
+      <p>The fade in and fade out animation is done with a framerate-independent easing function that modified the draw
+        ranges
+        of each mesh.</p>
+      <p><b>Credits</b></p>
+      <p>Inspired by <a href="https://twitter.com/archillect/status/794001158440357890">this image</a>, <a href="https://twitter.com/archillect/status/795463296799428609">this
+          image
+        </a> and <a href="https://twitter.com/grgrdvrt/status/794063490889744384">all this thread</a><br> Attractor
+        equations
+        and initial conditions values from <a href="http://www.chaoscope.org/doc/attractors.htm">chaoscope</a>,
+        <a href="http://softology.com.au/tutorials/attractors2d/tutorial.htm">softology</a> and Wikipedia's <a href="https://en.wikipedia.org/wiki/List_of_chaotic_maps">list
+          of chaotic maps</a>.<br> I can't remember where I got the separable blur and FXAA shader code from 😕</p>
+      <p></p>
+      <p>Coded using WebGL with <a href="http://threejs.org/">three.js</a>, <a href="https://github.com/spite/Maf.js/tree/master">Maf.js</a>
+        and <a href="https://github.com/spite/THREE.MeshLine">THREE.MeshLine</a></p>
+    </div>
+  </div>
+
+  <div class="fullscreen-button">↗</div>
+
+  <script>
+    function fullscreen() {
+      var element = document.querySelector('#container');
+
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+      } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+      } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+      }
+    }
+
+    document.querySelector('.fullscreen-button')
+      .addEventListener('click', fullscreen);
+
+    document.querySelector('#moreDetails')
+      .addEventListener('click', function (event) {
+        document.querySelector('#details').classList.toggle('hidden');
+      });
+
+    //
+
+    function init() {
+      if (window.location.hash) processHash();
+      //else initScene('lorenz');
+      //onWindowResized();
+
+      window.addEventListener('keydown', function (event) {
+        if (event.ctrlKey && event.keyCode === 70) {
+          fullscreen();
+        }
+      });
+
+      window.addEventListener('resize', function (event) {
+        console.log('foos')
+      });
+
+      // do stuff
+    }
+
+    window.addEventListener('load', init);
+    window.addEventListener('hashchange', processHash);
+
+    var attractorButtons = document.querySelectorAll('#attractors li');
+
+    function processHash() {
+
+      var hash = window.location.hash.substr(1);
+      var id = hash.substr(0, hash.indexOf(','));
+      [].forEach.call(attractorButtons, function (li) {
+        var itemId = li.getAttribute('data-attractor');
+        li.classList.remove('active');
+        if (itemId === id) li.classList.add('active');
+      });
+      //initScene(id, false, hash);
+
+    }
+
+    var currentAttractor = 'lorenz';
+    [].forEach.call(attractorButtons, function (li) {
+      var id = li.getAttribute('data-attractor');
+      li.addEventListener('click', function (e) {
+        [].forEach.call(attractorButtons, function (li) { li.classList.remove('active'); });
+        //initScene(id, false);
+        this.classList.add('active');
+        e.preventDefault();
+      })
+    })
+
+    document.getElementById('randomize').addEventListener('click', function (e) {
+      //initScene(currentAttractor, true);
+      e.preventDefault();
+    })
+
+  </script>
+</body>
+
+</html>
